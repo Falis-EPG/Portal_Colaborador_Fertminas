@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partículas em HTML e JavaScript</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+        .particles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            background-color: #5c00a2; /* Cor das partículas */
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            pointer-events: none; /* Para evitar interação do mouse com as partículas */
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="particles-container" id="particles-container"></div>
+    <div class="globe-container">
+        <canvas id="globe-canvas"></canvas>
+        <div class="content">
+            <h1 style="text-shadow:
+            1px 1px 1px black,
+            0 0 6px blue,
+            0 0 6px blue;">Erick Prados Pereira</h1>
+            <p style="text-shadow:
+            1px 1px 1px black,
+            0 0 5px blue,
+            0 0 5px blue;">Engenheiro de Dados &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp; Programador &nbsp;&nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;&nbsp;Engenheiro de IA</p>
+            <div style="text-align: center;">
+                <ul>
+                    <a href="aliencoreProjects.html"><li class="li">Projetos</li></a>
+                    <a href="alienkissCourses.html"><li class="li">Cursos</li></a>
+                    <a href="#"><li class="li">Eventos... EM BREVE</li></a>
+                    <a href="aliencoreExperience.html"><li class="li">Experiencia</li></a>
+                    <a href="https://github.com/Falis-EPG" target="_blank"><li class="li">GitHub</li></a>
+                    <a href="coverLetter.html"><li class="li">Carta</li></a>
+                </ul>
+                <div class="controls">
+                    <button id="play-music" class="btn"><i class="fas fa-play"></i></button>
+                </div>
+                <div style="text-align: center;">
+                    <div class="footer-sound">
+                        <span id="bar-1" class="sbar"></span>
+                        <span id="bar-2" class="sbar"></span>
+                        <span id="bar-3" class="sbar"></span>
+                        <span id="bar-4" class="sbar"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <audio autoplay loop> <!--agora com autoplay e sem controls-->
+        <source src="eph.mp3" type="audio/mpeg" id="background-music">
+        Your browser does not support the audio tag.
+      </audio>
+    <script>
+        // JavaScript para criar e animar as partículas
+        document.addEventListener("DOMContentLoaded", function () {
+            const particleCount = 1000;
+            const container = document.getElementById('particles-container');
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                container.appendChild(particle);
+
+                // Posicionamento aleatório das partículas
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+            }
+
+            // Animar as partículas
+            function animateParticles() {
+                const particles = document.getElementsByClassName('particle');
+
+                // Movimento das partículas
+                for (let i = 0; i < particles.length; i++) {
+                    const particle = particles[i];
+                    let left = parseFloat(particle.style.left);
+                    let top = parseFloat(particle.style.top);
+
+                    // Movimento aleatório das partículas (pode ajustar conforme necessário)
+                    left += Math.random() * 2 - 1; // Movimento horizontal
+                    top += Math.random() * 2 - 1; // Movimento vertical
+
+                    // Verificar se a partícula saiu da tela e reposicionar
+                    if (left < 0 || left > window.innerWidth || top < 0 || top > window.innerHeight) {
+                        left = Math.random() * window.innerWidth;
+                        top = Math.random() * window.innerHeight;
+                    }
+
+                    particle.style.left = left + 'px';
+                    particle.style.top = top + 'px';
+                }
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles(); // Iniciar animação das partículas
+
+        });
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            let audioBuffer;
+            let source;
+            const gainNode = audioContext.createGain();
+
+            fetch('eph.mp3')
+                .then(response => response.arrayBuffer())
+                .then(data => audioContext.decodeAudioData(data))
+                .then(buffer => {
+                    audioBuffer = buffer;
+                });
+
+            const playButton = document.getElementById('play-music');
+
+            function startAudio() {
+                if (source) {
+                    source.stop();
+                    source = null;
+                    playButton.textContent = 'Play Music';
+                } else {
+                    source = audioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(gainNode).connect(audioContext.destination);
+                    source.loop = true;
+                    source.start();
+                    gainNode.gain.value = 0.15; // Definindo o volume em 25%
+                    playButton.innerHTML = '<i class="fas fa-pause"></i>';
+                }
+            }
+            playButton.addEventListener('click', startAudio);
+
+            // Adiciona evento para qualquer clique na página
+            document.addEventListener('click', () => {
+                if (audioContext.state === 'suspended') {
+                    audioContext.resume();
+                }
+            });
+
+
+    </script>
+    <script src="script.js"></script>
+    <script src="mains.js"></script>
+</body>
+</html>

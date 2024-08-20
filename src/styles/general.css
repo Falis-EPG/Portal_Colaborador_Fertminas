@@ -1,0 +1,139 @@
+@font-face {
+    font-family: montserrat;
+    src: url(../fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+body {
+    margin: 0;
+    font-family: montserrat;
+}
+
+.sidebar {
+    height: 100%;
+    width: 270px;
+    position: fixed;
+    top: 0;
+    left: 30px;
+    background-color: #333;
+    color: white;
+    transition: 0.3s;
+    padding: 10px;
+    overflow: auto;
+    transform: translateX(-250px); /* Initially hidden */
+}
+
+.btn_sidebar {
+    width: 90%;
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar.active {
+    transform: translateX(0); /* Show sidebar */
+    left: 0px;
+}
+
+.sidebar.active .btn_sidebar{
+    background-color: rgba(103, 255, 103, 0.281);
+    border-radius: 15px;
+    margin-top: 15px;
+}
+
+.sidebar.active .btn_sidebar:hover{
+    background-color: rgba(103, 255, 103, 0.527);
+}
+
+.sidebar .close-btn {
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.sidebar nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    padding: 15px;
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+}
+
+.content {
+    margin-left: 60px; /* Offset for the sidebar */
+    padding: 20px;
+}
+
+.section {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.178);
+}
+
+/* Media Query for responsive design */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: 100%;
+        transform: translateX(-100%); /* Initially hidden */
+    }
+
+    .sidebar.active {
+        transform: translateX(0); /* Show sidebar */
+    }
+
+    .content {
+        margin-left: 0; /* No offset */
+    }
+}
+
+#section1 {
+    background-color: rgba(97, 255, 97, 0.158);
+    border: 1px solid rgba(0, 0, 0, 0.247);
+    text-align: center;
+}
+
+#section2 {
+    background-color: rgba(97, 255, 97, 0.158);
+    border: 1px solid rgba(0, 0, 0, 0.247);
+}
+
+#section3 {
+    background-color: rgba(97, 255, 97, 0.158);
+    border: 1px solid rgba(0, 0, 0, 0.247);
+}
+
+.comunicados {
+    max-width: 350px;
+    margin-right: 30px;
+}
+
+.comunicados-sections {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.aniversariantes {
+    max-width: 90vw;
+}
+
+.section-title {
+    font-size: 4rem;
+    color: rgb(0, 133, 0);
+}
+
+.welcome-p {
+    font-size: 22px;
+}

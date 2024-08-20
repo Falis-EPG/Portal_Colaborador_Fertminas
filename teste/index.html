@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chat</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        async function sendMessage() {
+            const request_chat = document.getElementById('userInput').value;
+            const chatBox = document.getElementById('chatBox');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+
+            // Adicionar a mensagem do usuário ao chat
+            if (request_chat.trim()) {
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user';
+                userMessage.innerText = request_chat;
+                chatBox.appendChild(userMessage);
+                document.getElementById('userInput').value = '';
+                chatBox.scrollTop = chatBox.scrollHeight; // Rolagem para o fim
+            }
+
+            // Exibir a animação de carregamento
+            loadingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('http://3.226.151.106:5000/chatbot/send_request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: request_chat })
+                });
+
+                const data = await response.json();
+                const botMessage = document.createElement('div');
+                botMessage.className = 'message bot';
+                botMessage.innerText = data.response;
+                chatBox.appendChild(botMessage);
+                chatBox.scrollTop = chatBox.scrollHeight; // Rolagem para o fim
+            } catch (error) {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message bot';
+                errorMessage.innerText = 'Erro ao enviar a mensagem.';
+                chatBox.appendChild(errorMessage);
+                chatBox.scrollTop = chatBox.scrollHeight; // Rolagem para o fim
+            } finally {
+                // Ocultar a animação de carregamento
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userInput = document.getElementById('userInput');
+            userInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault(); // Impede o comportamento padrão de nova linha
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Escreva aqui a sua pergunta par anossa IA">
+            <button onclick="sendMessage()">Enviar</button>
+        </div>
+    </div>
+    <div class="loading" id="loadingIndicator">
+        <span></span><span></span><span></span>
+    </div>
+</body>
+</html>
