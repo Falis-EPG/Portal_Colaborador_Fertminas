@@ -1,0 +1,39 @@
+@font-face {
+    font-family: montserrat;
+    src: url(../fonts/Montserrat-VariableFont_wght.ttf);
+}
+body{
+    font-family: montserrat;
+}
+/* Estilos básicos para a barra de navegação */
+.navbar {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    height: 50px;
+}
+
+.navbar-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-item {
+    display: inline;
+    margin-top: 10px;
+}
+
+.navbar-item a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+.navbar-item a:hover {
+    background-color: #575757;
+}

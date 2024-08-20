@@ -1,0 +1,26 @@
+.content{
+    background-color: rgb(218, 218, 218);
+    margin-left: 90px;
+    margin-top: 15px;
+    margin-right: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    height: 100%;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.527);
+}
+
+.document-list {
+    margin-bottom: 20px;
+}
+.document-item {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+iframe {
+    width: 100%;
+    height: 600px;
+    border: 1px solid #ddd;
+    display: none;
+}

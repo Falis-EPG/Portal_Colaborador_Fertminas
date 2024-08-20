@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partículas em HTML e JavaScript</title>
+    <link rel="stylesheet" href="coverLetter.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body,
+        html {
+            margin: 0;
+        }
+
+        .particles-container {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            background-color: #040f15;
+        }
+
+        .particle {
+            position: absolute;
+            background-color: #5c00a2;
+            /* Cor das partículas */
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            pointer-events: none;
+            /* Para evitar interação do mouse com as partículas */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="geral" class="geral">
+
+        <div id="principalContant">
+            <ul>
+                <a href="index.html">
+                    <li class="li">Home</li>
+                </a>
+                <a href="aliencoreProjects.html"><li class="li">Projetos</li></a>
+                <a href="alienkissCourses.html">
+                    <li class="li">Cursos</li>
+                </a>
+                <a href="#"><li class="li">Eventos... EM BREVE</li></a>
+                <a href="aliencoreExperience.html">
+                    <li class="li">Experiencia</li>
+                </a>
+                <a href="https://github.com/Falis-EPG" target="_blank">
+                    <li class="li">GitHub</li>
+                </a>
+                <a href="#">
+                    <li class="li">Carta</li>
+                </a>
+            </ul>
+            <h1>CARTA DE APRESENTAÇÃO</h1>
+            <h4>Uma apresentação de como eu me enxergo frente ao espelho.</h4><br><br><br>
+            <div class="controls" style="z-index: 3; position: relative;">
+                <button id="play-music" class="btn"><i class="fas fa-play"></i></button><span>◄-- Acione a música para
+                    uma melhor Leitura!</span>
+            </div>
+            <div style="text-align: center;">
+                <div class="footer-sound">
+                    <span id="bar-1" class="sbar"></span>
+                    <span id="bar-2" class="sbar"></span>
+                    <span id="bar-3" class="sbar"></span>
+                    <span id="bar-4" class="sbar"></span>
+                </div>
+            </div>
+            <br><br><br>
+            <h1>Olá</h1>
+            <p style="text-align: center;">Desde os primeiros momentos em que tive contato com um computador, a centelha da paixão pela tecnologia acendeu em meu coração. Esta jornada, que começou como curiosidade infantil, evoluiu para uma carreira sólida e inspiradora na área da tecnologia.<br><br>
+                Minha dedicação vai além do ambiente profissional; a tecnologia é uma extensão da minha própria identidade. Nos momentos em que estou imerso em códigos, sinto a mesma emoção de um artista ao criar uma obra-prima. Cada linha de código, cada algoritmo desenvolvido, é uma peça de um quebra-cabeça que visa construir um futuro mais eficiente e interconectado.<br><br>
+                Ao longo dos anos, tive o privilégio de participar de projetos desafiadores que não só resolveram problemas imediatos, mas também abriram caminho para novas possibilidades. A criação de soluções inteligentes para problemas cotidianos não é apenas minha profissão, mas minha missão. Estou comprometido em utilizar meu conhecimento e habilidades para melhorar vidas e impulsionar a inovação em diversas indústrias.<br><br>
+                Meu objetivo é continuar crescendo, aprendendo e desenvolvendo-me para alcançar o auge da excelência no campo tecnológico. Aspiro a me tornar uma referência no mercado, um nome sinônimo de inovação. Cada desafio que enfrento é uma oportunidade para explorar novas fronteiras e contribuir para um mundo onde a tecnologia serve como um poderoso aliado no progresso humano.<br><br>
+                Estou ansioso para colaborar com profissionais que compartilham a mesma paixão e compromisso com a excelência, e juntos, transformar ideias visionárias em realidades tangíveis.<br><br>
+                Nessa carta de apresentação, nesse site que fiz com muito carinho, expresso um amor real pela tecnologia e pelos desafios que ela me oferece. Obrigado
+            </p>
+
+
+        </div>
+        <div class="particles-container" id="particles-container"></div>
+    </div>
+
+    <script>
+        // JavaScript para criar e animar as partículas
+        document.addEventListener("DOMContentLoaded", function () {
+            const particleCount = 1000;
+            const container = document.getElementById('particles-container');
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                container.appendChild(particle);
+
+                // Posicionamento aleatório das partículas
+                particle.style.left = Math.random() * window.innerWidth + 'px';
+                particle.style.top = Math.random() * window.innerHeight + 'px';
+            }
+
+            // Animar as partículas
+            function animateParticles() {
+                const particles = document.getElementsByClassName('particle');
+
+                // Movimento das partículas
+                for (let i = 0; i < particles.length; i++) {
+                    const particle = particles[i];
+                    let left = parseFloat(particle.style.left);
+                    let top = parseFloat(particle.style.top);
+
+                    // Movimento aleatório das partículas (pode ajustar conforme necessário)
+                    left += Math.random() * 2 - 1; // Movimento horizontal
+                    top += Math.random() * 2 - 1; // Movimento vertical
+
+                    // Verificar se a partícula saiu da tela e reposicionar
+                    if (left < 0 || left > window.innerWidth || top < 0 || top > window.innerHeight) {
+                        left = Math.random() * window.innerWidth;
+                        top = Math.random() * window.innerHeight;
+                    }
+
+                    particle.style.left = left + 'px';
+                    particle.style.top = top + 'px';
+                }
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles(); // Iniciar animação das partículas
+
+        });
+
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let audioBuffer;
+        let source;
+        const gainNode = audioContext.createGain();
+
+        fetch('eph.mp3')
+            .then(response => response.arrayBuffer())
+            .then(data => audioContext.decodeAudioData(data))
+            .then(buffer => {
+                audioBuffer = buffer;
+            });
+
+        const playButton = document.getElementById('play-music');
+
+        function startAudio() {
+            if (source) {
+                source.stop();
+                source = null;
+                playButton.textContent = 'Play Music';
+            } else {
+                source = audioContext.createBufferSource();
+                source.buffer = audioBuffer;
+                source.connect(gainNode).connect(audioContext.destination);
+                source.loop = true;
+                source.start();
+                gainNode.gain.value = 0.15; // Definindo o volume em 25%
+                playButton.innerHTML = '<i class="fas fa-pause"></i>';
+            }
+        }
+        playButton.addEventListener('click', startAudio);
+
+        // Adiciona evento para qualquer clique na página
+        document.addEventListener('click', () => {
+            if (audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        });
+
+
+    </script>
+    <script src="mains.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
