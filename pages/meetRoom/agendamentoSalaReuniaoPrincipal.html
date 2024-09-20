@@ -108,19 +108,20 @@
         }
         document.addEventListener("DOMContentLoaded", function () {
             const token = sessionStorage.getItem('userToken');
+            const pagecode = 'K02lg' 
             if (token) {
-                fetch('http://3.226.151.106:5000/verify_token', {
+                fetch('http://3.226.151.106:5000/verify_token_access_principalCalendar', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ token }),
+                    body: JSON.stringify({ token, pagecode }),
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (!data.success) {
                             window.location.href = '../../index.html'; // Redireciona para a tela de login se o token não for válido
-                            alert('Token de acesso inválido');
+                            alert('Permission Denied');
                         } else {
                             // Código de inicialização do calendário e eventos aqui
                             var calendarEl = document.getElementById('calendar');

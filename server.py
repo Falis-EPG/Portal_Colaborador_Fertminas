@@ -4,6 +4,7 @@ from flask_cors import CORS
 from datetime import datetime
 import google.generativeai as genai
 import re
+import json
 
 
 
@@ -90,7 +91,7 @@ def login():
 def verify_token():
     print('Connect Success: 200')
 
-    if request.method =='OPTIONS':
+    if request.method == 'OPTIONS':
         return jsonify({'success': True})
 
     if request.method == 'POST':
@@ -104,26 +105,58 @@ def verify_token():
             'password': 'Uuz>+oE#Xw53J55-@A!PA{l!',
             'host': 'localhost',
             'database': 'portal'
-            }
+        }
 
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor(dictionary=True)
 
-        query = 'SELECT * FROM login_users WHERE token=%s'
-        cursor.execute(query, (token,))
-        result = cursor.fetchone()
-        print(result)
+        # Obter o grupo de permissões do usuário
+        query_groupPermission = 'SELECT grupo_permissao FROM login_users WHERE token=%s'
+        cursor.execute(query_groupPermission, (token,))
+        grupo_permissao = cursor.fetchone()
 
-        cursor.close()
-        connection.close()
+        if not grupo_permissao:
+            cursor.close()
+            connection.close()
+            return jsonify({'success': False, 'message': 'Token inválido ou usuário não encontrado'}), 403
 
-        print("Verification Success: 200, Connection with database closed...!...")
+        # Obter os botões para a barra lateral se o grupo for "ti"
+        if grupo_permissao['grupo_permissao'] == 'ti':
+            query_buttons = 'SELECT sidebar_buttons FROM permission_groups WHERE grupo_permissao=%s'
+            cursor.execute(query_buttons, (grupo_permissao['grupo_permissao'],))
+            buttons = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            print(buttons)
 
-        if result:
-            print('success')
-            return jsonify({'success': True})
+            if buttons:
+                sidebar_buttons = json.loads(buttons['sidebar_buttons'])
+                if isinstance(sidebar_buttons, dict):
+                    sidebar_buttons = [sidebar_buttons]
+                print(sidebar_buttons)
+                return jsonify({'success': True, 'buttons': sidebar_buttons})
+            else:
+                return jsonify({'success': False, 'message': 'Botões não encontrados para este grupo'}), 403
+        if grupo_permissao['grupo_permissao'] == 'geral':
+            query_buttons = 'SELECT sidebar_buttons FROM permission_groups WHERE grupo_permissao=%s'
+            cursor.execute(query_buttons, (grupo_permissao['grupo_permissao'],))
+            buttons = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            print(buttons)
+
+            if buttons:
+                sidebar_buttons = json.loads(buttons['sidebar_buttons'])
+                if isinstance(sidebar_buttons, dict):
+                    sidebar_buttons = [sidebar_buttons]
+                print(sidebar_buttons)
+                return jsonify({'success': True, 'buttons': sidebar_buttons})
+            else:
+                return jsonify({'success': False, 'message': 'Botões não encontrados para este grupo'}), 403
         else:
-            return jsonify({'success': False})
+            cursor.close()
+            connection.close()
+            return jsonify({'success': True, 'buttons': []})
 
 ##########################################################################################################################
 
@@ -286,6 +319,190 @@ def send_request():
 
         print("Sending Response")
         return jsonify({'response': final_response})
+
+###################################################################################################################################################
+
+@app.route('/verify_token_access_itCalendar', methods=['POST', 'OPTIONS'])
+def verify_token_access_itCalendar():
+    print('Connect Success: 200')
+
+    if request.method =='OPTIONS':
+        return jsonify({'success': True})
+
+    if request.method == 'POST':
+        data = request.json
+        token = data.get('token')
+        pagecode = data.get('pagecode')
+
+        print('Token Colected...!...')
+
+        db_config = {
+            'user': 'portalcolaborador',
+            'password': 'Uuz>+oE#Xw53J55-@A!PA{l!',
+            'host': 'localhost',
+            'database': 'portal'
+            }
+
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+
+        query_groupPermission = 'SELECT grupo_permissao FROM login_users WHERE token=%s'
+        cursor.execute(query_groupPermission, (token,))
+        grupo_permissao = cursor.fetchone()
+
+        if not grupo_permissao:
+            cursor.close()
+            connection.close()
+            return jsonify({'success': False, 'message': 'Token inválido ou usuário não encontrado'}), 403
+        
+
+        query_listpermission = 'SELECT paginas_acesso FROM permission_groups WHERE grupo_permissao=%s'
+        cursor.execute(query_listpermission, (grupo_permissao['grupo_permissao'],))
+        paginas_acesso = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        print("Verification Success: 200, Connection with database closed...!...")
+
+        if paginas_acesso:
+            # Converter a string JSON em um dicionário Python
+            permissoes_paginas = json.loads(paginas_acesso['paginas_acesso'])
+
+            # Verificar se o código da página existe e se a permissão é "granted"
+            if pagecode in permissoes_paginas and permissoes_paginas[pagecode] == 'granted':
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'message': 'Acesso negado'}), 403
+        else:
+            return jsonify({'success': False, 'message': 'Grupo de permissão não encontrado'}), 403
+        
+##############################################################################################################################################################
+@app.route('/verify_token_access_principalCalendar', methods=['POST', 'OPTIONS'])
+def verify_token_access_principalCalendar():
+    print('Connect Success: 200')
+
+    if request.method =='OPTIONS':
+        return jsonify({'success': True})
+
+    if request.method == 'POST':
+        data = request.json
+        token = data.get('token')
+        pagecode = data.get('pagecode')
+
+        print('Token Colected...!...')
+
+        db_config = {
+            'user': 'portalcolaborador',
+            'password': 'Uuz>+oE#Xw53J55-@A!PA{l!',
+            'host': 'localhost',
+            'database': 'portal'
+            }
+
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor(dictionary=True)
+
+        query_groupPermission = 'SELECT grupo_permissao FROM login_users WHERE token=%s'
+        cursor.execute(query_groupPermission, (token,))
+        grupo_permissao = cursor.fetchone()
+
+        if not grupo_permissao:
+            cursor.close()
+            connection.close()
+            return jsonify({'success': False, 'message': 'Token inválido ou usuário não encontrado'}), 403
+        
+
+        query_listpermission = 'SELECT paginas_acesso FROM permission_groups WHERE grupo_permissao=%s'
+        cursor.execute(query_listpermission, (grupo_permissao['grupo_permissao'],))
+        paginas_acesso = cursor.fetchone()
+
+        cursor.close()
+        connection.close()
+
+        print("Verification Success: 200, Connection with database closed...!...")
+
+        if paginas_acesso:
+            # Converter a string JSON em um dicionário Python
+            permissoes_paginas = json.loads(paginas_acesso['paginas_acesso'])
+
+            # Verificar se o código da página existe e se a permissão é "granted"
+            if pagecode in permissoes_paginas and permissoes_paginas[pagecode] == 'granted':
+                return jsonify({'success': True})
+            else:
+                return jsonify({'success': False, 'message': 'Acesso negado'}), 403
+        else:
+            return jsonify({'success': False, 'message': 'Grupo de permissão não encontrado'}), 403
+##############################################################################################################################################################
+
+@app.route('/addEventITCalendar', methods=['POST', 'OPTIONS', 'GET'])
+def add_event01ITCalendar():
+
+    if request.method =='OPTIONS':
+        return jsonify({'success': True})
+
+    if request.method == 'POST':
+        db_config = {
+            'user': 'portalcolaborador',
+            'password': 'Uuz>+oE#Xw53J55-@A!PA{l!',
+            'host': 'localhost',
+            'database': 'portal'
+        }
+
+        data = request.get_json()
+        title = data['title']
+        responsible = data['responsible']
+        participants = data['participants']
+        start = f"{data['date']}T{data['start']}"
+        end = f"{data['date']}T{data['end']}"
+        description = data['description']
+        created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        try:
+            conn = mysql.connector.connect(**db_config)
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO itcalendar (title, responsible, participants, START, end, description, created_at)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (title, responsible, participants, start, end, description, created_at))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return jsonify({'success': True})
+        except mysql.connector.Error as err:
+            print(f"Erro: {err}")
+            return jsonify({'success': False})
+        
+@app.route('/consultEventITCalendar', methods=['GET'])
+def get_events01ITCalendar():
+    if request.method == 'OPTIONS':
+        return jsonify({'success': True})
+
+    if request.method == 'GET':
+        print("connected")
+        try:
+            db_config = {
+            'user': 'portalcolaborador',
+            'password': 'Uuz>+oE#Xw53J55-@A!PA{l!',
+            'host': 'localhost',
+            'database': 'portal'
+        }
+            conn = mysql.connector.connect(**db_config)
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("SELECT id, title, responsible, participants, START, end, description FROM itcalendar")
+            events = cursor.fetchall()
+            cursor.close()
+            conn.close()
+
+            # Convertendo datas para formato ISO 8601
+            for event in events:
+                event['START'] = event['START'].isoformat()
+                event['end'] = event['end'].isoformat()
+
+            print(events)
+            return jsonify(events)
+        except mysql.connector.Error as err:
+            print(f"Erro: {err}")
+            return jsonify([])
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

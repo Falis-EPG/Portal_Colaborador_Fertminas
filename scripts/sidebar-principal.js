@@ -3,12 +3,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const sidebarHTML = `
         <div class="sidebar">
             <button class="close-btn" onclick="toggleSidebar()">&#9776;</button>
+            <br><br>
             <nav class="links-sidebar">
-                <ul id="sidebar-list"><br><br>
-                    <a href="#section1"><li class="btn_sidebar">Em Breve</li></a>
-                    <a href="#section1"><li class="btn_sidebar">Em Breve</li></a>
-                    <a href="#section1"><li class="btn_sidebar">Em Breve</li></a>
-                    <a href="https://app.pipefy.com/portals/41bee44f-d5ca-41fa-b7b2-0cc3e21501a3"><li class="btn_sidebar">Chamados PipeFy</li></a>
+                <ul id="sidebar-list">
+                    <a href="../meetRoom/agendamentoSalaReuniaoSecundaria.html"><li class="btn_sidebar">Agendamento sala de Reunião</li></a>
+                    <a href="https://app.pipefy.com/organizations/301095341/interfaces/922dbb04-623c-40f9-830a-056873561430/pages/4a10b7c3-68cd-4441-bbf4-3cda932bd8d7"><li class="btn_sidebar">Chamados PipeFy</li></a>
                     <a href="../../index.html"><li class="btn_sidebar">Sair</li></a>
                 </ul>
             </nav>
@@ -49,7 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         const a = document.createElement('a');
                         a.href = button.link;
                         a.appendChild(li);
-                        sidebar.appendChild(a);
+                        const firstChild = sidebar.firstChild;
+                        sidebar.insertBefore(a, firstChild);
                     });
                 }
             }
